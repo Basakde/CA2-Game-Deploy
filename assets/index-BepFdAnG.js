@@ -5,12 +5,13 @@
             border: 5px solid #fb6f92;
             flex-direction: column;
             width: fit-content;
-       }
+            background-color: #b5abafff;
+        }
        .row {
             display: flex;
             flex-direction: row;
             margin: 10px;
-            }
+        }
 
         .column {
              display: flex;
