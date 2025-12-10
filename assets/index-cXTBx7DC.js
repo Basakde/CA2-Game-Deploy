@@ -1,7 +1,7 @@
 (function(){const t=document.createElement("link").relList;if(t&&t.supports&&t.supports("modulepreload"))return;for(const s of document.querySelectorAll('link[rel="modulepreload"]'))r(s);new MutationObserver(s=>{for(const o of s)if(o.type==="childList")for(const a of o.addedNodes)a.tagName==="LINK"&&a.rel==="modulepreload"&&r(a)}).observe(document,{childList:!0,subtree:!0});function e(s){const o={};return s.integrity&&(o.integrity=s.integrity),s.referrerPolicy&&(o.referrerPolicy=s.referrerPolicy),s.crossOrigin==="use-credentials"?o.credentials="include":s.crossOrigin==="anonymous"?o.credentials="omit":o.credentials="same-origin",o}function r(s){if(s.ep)return;s.ep=!0;const o=e(s);fetch(s.href,o)}})();class ct extends HTMLElement{static observedAttributes=["type","colour"];static HEIGHT="100px";static WIDTH="100px";static BORDER="1px";static SHAPE_DATA={circle:{tag:"circle"},square:{tag:"rect"},triangle:{tag:"polygon"}};static get SHAPES(){return Object.keys(ct.SHAPE_DATA)}static shapeTag(t){return ct.SHAPE_DATA[t].tag}static COLOURS=["red","green","blue","yellow","orange","purple"];static COMBINATIONS=ct.SHAPES.map(t=>ct.COLOURS.map(e=>[t,e])).flat();static getUniqueRandomCardsAsHTML(t,e){if(t>this.COMBINATIONS.length)throw new Error(`Cannot get ${t} unique shape cards. Maximum is ${this.COMBINATIONS.length}.`);return ct.COMBINATIONS.reduce((r,s)=>r.toSpliced(Math.floor(Math.random()*(r.length+1)),0,s),[]).slice(0,t).reduce((r,s)=>{for(let o=0;o<(e?2:1);++o)r.splice(Math.floor(Math.random()*(r.length+1)),0,s);return r},[]).map(([r,s])=>`<shape-card type="${r}" colour="${s}"></shape-card>`).join("")}constructor(){super(),this.attachShadow({mode:"open"})}connectedCallback(){this.shadowRoot.appendChild(document.getElementById("shape-card-template").content.cloneNode(!0)),this.#t(null,this.getAttribute("type")),this.#e(this.getAttribute("colour")),this.style.setProperty("--card-width",ct.WIDTH),this.style.setProperty("--card-height",ct.HEIGHT),this.style.setProperty("--card-border",ct.BORDER)}attributeChangedCallback(t,e,r){this.shadowRoot&&(t=="type"?this.#t(e,r):t=="colour"&&this.#e(r))}#t(t,e){if(e&&!(e in ct.SHAPE_DATA))throw new Error(`Invalid shape type attribute ${newType}. Expected one of ${ct.SHAPES.join(", ")}.`);t&&this.shadowRoot.querySelector(ct.shapeTag(t))?.setAttribute("fill-opacity","0"),e&&this.shadowRoot.querySelector(ct.shapeTag(e))?.setAttribute("fill-opacity","1")}#e(t){if(t&&!ct.COLOURS.includes(t))throw new Error(`Invalid colour attribute ${t}. Expected one of ${ct.COLOURS.join(", ")}.`);t&&this.shadowRoot.querySelector(ct.shapeTag(this.getAttribute("type")))?.setAttribute("fill",t)}isFaceUp(){return this.shadowRoot.querySelector(".card").classList.contains("card-face-up")}flip(){const t=this.shadowRoot.querySelector(".card");t.classList.toggle("card-face-down"),t.classList.toggle("card-face-up")}}customElements.define("shape-card",ct);class Ll extends HTMLElement{static observedAttributes=["size"];constructor(){super(),this.attachShadow({mode:"open"})}connectedCallback(){console.log("GameBoard connected!"),this.#t(this.getAttribute("size"));const t=this.#e(),e=this.#r();this.shadowRoot.append(e,t)}#t(t){const[e,r]=t.split("x").map(s=>parseInt(s.trim()));this.rows=e,this.cols=r}#e(){const t=document.createElement("div");t.classList.add("board");const r=this.rows*this.cols/2;t.innerHTML=ct.getUniqueRandomCardsAsHTML(r,!0);let s=Array.from(t.querySelectorAll("shape-card")),o=0;for(let a=0;a<this.rows;a++){const l=document.createElement("div");l.setAttribute("class","row");for(let h=0;h<this.cols;h++){const f=document.createElement("div");f.setAttribute("class","column"),f.appendChild(s[o++]),l.appendChild(f)}t.appendChild(l)}return this.#n(s),t}#n(t){let e=[],r=!0,s=0;t.forEach(o=>{o.addEventListener("click",async()=>{if(!o.isFaceUp()&&r&&(o.flip(),e.push(o),s++,!(e.length<2))){r=!1;let a=0;e[a].getAttribute("type")===e[a+1].getAttribute("type")&&e[a].getAttribute("colour")===e[a+1].getAttribute("colour")?(console.log("It's a match!!"),e=[],r=!0,this.allCardsMatched(t)&&(this.dispatchEvent(new CustomEvent("GameOver",{detail:{clickCount:s}})),this.style.display="none")):(console.log("Not a match. Flipping cards back..."),setTimeout(()=>{r=!0,e.forEach(h=>h.flip()),e=[]},800))}})})}allCardsMatched(t){return t.every(e=>e.isFaceUp())}#r(){const t=document.createElement("style");return t.textContent=`
-            
+
         .board {
-            margin: 20px;
+            margin: auto;
             border: 5px solid #fb6f92;
             flex-direction: column;
             width: fit-content;
@@ -11,10 +11,14 @@
             display: flex;
             flex-direction: row;
             margin: 10px;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+
         }
 
         .column {
-             display: flex;
+            display: flex;
             flex-direction: column;
             margin: 10px;
         }
