@@ -2,7 +2,7 @@
             
         .board {
             margin: 20px;
-            border: 2px solid #deeb34;
+            border: 5px solid #fb6f92;
             flex-direction: column;
             width: fit-content;
        }
