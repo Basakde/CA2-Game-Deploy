@@ -2,10 +2,10 @@
 
         .board {
             margin: auto;
-            border: 5px solid #fb6f92;
+            border: 5px solid ;
             flex-direction: column;
             width: fit-content;
-            background-color: #b5abafff;
+            
         }
        .row {
             display: flex;
